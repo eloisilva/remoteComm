@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/__main__.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 18:16]
-#     Last Modified       :     [2018-07-25 21:22]
+#     Last Modified       :     [2018-08-04 01:16]
 #     Description         :     Version 1.0.0-dev1
 #################################################################################
 
@@ -15,11 +15,11 @@ from getpass import getpass
 from remotecomm.jumpRemote import jumpRemote
 
 # Change the jump variable to correct ip address
-#jump = '127.0.0.1'
-jump = 'edit the variable jump into the remotecomm/__main__ file'
+jump = '200.204.1.12'
+#jump = 'edit the variable jump into the remotecomm/__main__ file'
 
 # Debug configuration
-debug = False
+debug = True
 debug_dir = '/tmp/remotecomm/'
 
 # How meny proccess (threds) simultaneous
@@ -84,3 +84,6 @@ def main():
     for i in range(threads):
         th = ExecRouter(q, i)
         th.start()
+
+if __name__ == '__main__':
+    main()

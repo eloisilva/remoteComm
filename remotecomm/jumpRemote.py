@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/jumpRemote.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 15:51]
-#     Last Modified       :     [2018-07-25 21:16]
+#     Last Modified       :     [2018-08-04 01:09]
 #     Description         :     Version 1.0.0-dev1
 #################################################################################
 
@@ -17,23 +17,20 @@ from remotecomm.command import remoteCMD
 from remotecomm.logbin import logbin
 
 # Change the jump variable to correct ip address
-#jump = '127.0.0.1'
-jump = 'edit the variable jump into the remotecomm/jumpRemote file'
+jump = '200.204.1.12'
+#jump = 'edit the variable jump into the remotecomm/jumpRemote file'
 
-def jumpRemote(jump, username, password, host, *command, logfile=None):
+def jumpRemote(jump, username, password, host, *command, timeout=5.0, prompt_regex=None, logfile=None):
     log = logbin()
-    prompt = '@%s.*$|@%s.*#|%s#|<%s>|@%s>' % (host, host, host, host, host)
-    prompt = prompt + '|' + prompt.upper()
     conn = remoteCMD(jump, username, password)
     conn.jump()
     conn.remote(host, username, password)
-    sleep(1)
     conn.connect.logfile_read = log
     try:
         for comm in command:
             conn.connect.sendline(comm)
-            conn.connect.expect(prompt, timeout=120)
-    except TIMEOUT:
+            conn.prompt(timeout=timeout)
+    except:
         print('[-] Router: %s' % host, end='')
     else:
         print('[+] Router: %s' % host, end='')
@@ -57,9 +54,10 @@ def main():
         comm = input('\tEnter command: ')
         if comm == '.': break
         else: command.append(comm)
-    if 'exit' not in command or 'quit' not in command:
+    '''if 'exit' not in command or 'quit' not in command:
         command.append('exit')
         command.append('quit')
+    '''
     jumpRemote(jump, username, password, host, *command)
     print()
 
