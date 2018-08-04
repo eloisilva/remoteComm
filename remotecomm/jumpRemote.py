@@ -3,8 +3,8 @@
 #     File Name           :     remotecomm/jumpRemote.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 15:51]
-#     Last Modified       :     [2018-08-04 01:09]
-#     Description         :     Version 1.0.0-dev1
+#     Last Modified       :     [2018-08-04 01:25]
+#     Description         :     Version 1.0.1-dev1
 #################################################################################
 
 import sys, time, getpass
@@ -17,8 +17,8 @@ from remotecomm.command import remoteCMD
 from remotecomm.logbin import logbin
 
 # Change the jump variable to correct ip address
-jump = '200.204.1.12'
-#jump = 'edit the variable jump into the remotecomm/jumpRemote file'
+#jump = '127.0.0.1'
+jump = 'edit the variable jump into the remotecomm/jumpRemote file'
 
 def jumpRemote(jump, username, password, host, *command, timeout=5.0, prompt_regex=None, logfile=None):
     log = logbin()

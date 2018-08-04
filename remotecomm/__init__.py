@@ -3,13 +3,13 @@
 #     File Name           :     remotecomm/__init__.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2018-07-25 18:22]
-#     Last Modified       :     [2018-07-25 18:25]
+#     Last Modified       :     [2018-08-04 01:24]
 #     Description         :      
 #################################################################################
 
 import sys
 
-__version__ = '1.0.0-dev1'
+__version__ = '1.0.1-dev1'
 __author__ = 'Eloi Luiz da Silva'
 __email__ = 'eloi@how2security.com.br'
 
