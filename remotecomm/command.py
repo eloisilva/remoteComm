@@ -3,21 +3,21 @@
 #     File Name           :     command.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-05-23 01:18]
-#     Last Modified       :     [2018-08-03 20:06]
+#     Last Modified       :     [2018-08-04 00:42]
 #     Description         :     
 #################################################################################
 
+import sys
 import time
 import pexpect
-#from pexpect import TIMEOUT
 
 class remoteCMD:
-    def __init__(self, hostname, username, password, timeout=5.0):
+    def __init__(self, hostname, username, password, prompt_regex=None, timeout=5.0):
         self.hostname = hostname
         self.username = username
         self.password = password
         self.timeout = timeout
-        self.prompt_regex = '.*$|.*#'
+        self.prompt_regex = '.*$|.*#' if not prompt_regex else prompt_regex
         self.prompt_exact = ''
 
     def jump(self):
@@ -27,7 +27,8 @@ class remoteCMD:
             self.connect.sendline('yes')
             self.connect.expect('[p|P]assword')
         self.connect.sendline(self.password)
-        self.prompt_guess()
+        if self.prompt_guess():
+            self.prompt_regex = None
 
     def remote(self, hostname, username, password):
         self.prompt_regex = '.*$|.*#|.*>'
@@ -41,7 +42,8 @@ class remoteCMD:
             self.connect.sendline(username)
             self.connect.expect('[p|P]assword')
         self.connect.sendline(password)
-        self.prompt_guess()
+        if self.prompt_guess():
+            self.prompt_regex = None
 
     def timeout_set(x):
         try:
@@ -94,16 +96,26 @@ class remoteCMD:
                 self.prompt_exact = ''
             wait = time.time() - start
 
-    def prompt_expect(self):
+    def prompt_expect(self, timeout=None):
+        timeout = timeout or self.timeout
         if self.prompt_exact:
-            self.connect.expect_exact(self.prompt_exact, timeout=self.timeout)
+            self.connect.expect_exact(self.prompt_exact, timeout=timeout)
+        elif self.prompt_regex:
+            self.connect.expect(self.prompt_regex, timeout=timeout)
         else:
-            self.connect.expect(self.prompt_regex, timeout=self.timeout)
+            raise pexpect.TIMEOUT
 
     def prompt(self, **kargs):
         try:
-            self.prompt_expect()
+            self.prompt_expect(**kargs)
         except pexpect.TIMEOUT:
-            self.prompt_guess(**kargs)
-            self.connect.sendline()
-            self.prompt_expect()
+            try:
+                self.prompt_guess()
+                self.connect.sendline()
+                self.prompt_expect()
+            except:
+                sys.stderr.write('Error trying to expect device prompt')
+
+    def __del__(self):
+        if self.connect.terminate():
+            print('Session ended')
