@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/__main__.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 18:16]
-#     Last Modified       :     [2018-08-04 01:25]
+#     Last Modified       :     [2018-08-08 23:27]
 #     Description         :     Version 1.0.1-dev1
 #################################################################################
 
@@ -19,8 +19,8 @@ from remotecomm.jumpRemote import jumpRemote
 jump = 'edit the variable jump into the remotecomm/__main__ file'
 
 # Debug configuration
-debug = True
-debug_dir = '/tmp/remotecomm/'
+terminal = False
+output_dir = '/tmp/remotecomm/'
 
 # How meny proccess (threds) simultaneous
 threads = 10
@@ -67,16 +67,16 @@ class ExecRouter(threading.Thread):
                 print('Thread-%s: Done' % self.tid)
                 return
             else:
-                if not debug:
+                if terminal:
                     fileout = None
                 else:
-                    fileout = os.path.join(debug_dir, rtr + '_log.txt')
+                    fileout = os.path.join(output_dir, rtr + '_log.txt')
                 jumpRemote(jump, username, password, rtr, *command, logfile=fileout)
 
 def main():
-    # Create the debug_dir if debug is True
-    if debug:
-        os.makedirs(debug_dir, exist_ok=True)
+    # Create the output_dir if terminal is False
+    if not terminal:
+        os.makedirs(output_dir, exist_ok=True)
     # Add router to queue
     for router in routers:
         q.put(router)
