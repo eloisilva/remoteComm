@@ -3,8 +3,8 @@
 #     File Name           :     remotecomm/jumpRemote.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 15:51]
-#     Last Modified       :     [2018-08-08 22:34]
-#     Description         :     Version 1.0.1-dev1
+#     Last Modified       :     [2018-08-08 23:36]
+#     Description         :     Version 1.0.2-dev1
 #################################################################################
 
 import sys, time, getpass

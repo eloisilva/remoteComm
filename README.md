@@ -3,7 +3,7 @@ Python module to access remote ssh servers using jumpserver
 
 Important: This module is in development and has some issues, any help, bug report and code are welcome.
 
-# Version 1.0.0-dev1
+# Version 1.0.2-dev1
 This version of remotecomm can be installed as a package using pip.
 
 # Require
