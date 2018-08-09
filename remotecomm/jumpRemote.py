@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/jumpRemote.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 15:51]
-#     Last Modified       :     [2018-08-04 01:25]
+#     Last Modified       :     [2018-08-08 22:34]
 #     Description         :     Version 1.0.1-dev1
 #################################################################################
 
@@ -16,13 +16,9 @@ from pexpect import TIMEOUT
 from remotecomm.command import remoteCMD
 from remotecomm.logbin import logbin
 
-# Change the jump variable to correct ip address
-#jump = '127.0.0.1'
-jump = 'edit the variable jump into the remotecomm/jumpRemote file'
-
-def jumpRemote(jump, username, password, host, *command, timeout=5.0, prompt_regex=None, logfile=None):
+def jumpRemote(jump, username, password, host, *command, timeout=5.0, prompt_regex=None, logfile=None, debug=False):
     log = logbin()
-    conn = remoteCMD(jump, username, password)
+    conn = remoteCMD(jump, username, password, debug=debug)
     conn.jump()
     conn.remote(host, username, password)
     conn.connect.logfile_read = log
@@ -44,7 +40,9 @@ def jumpRemote(jump, username, password, host, *command, timeout=5.0, prompt_reg
                 file.write(log.data)
 
 def main():
-    print('Jumpserver:', jump)
+    debug = False
+    logfile = None
+    jump = input('Enter jumpserver: ')
     host = input('Enter hostname: ')
     username = input('Enter username: ')
     password = getpass('Enter password: ')
@@ -54,11 +52,7 @@ def main():
         comm = input('\tEnter command: ')
         if comm == '.': break
         else: command.append(comm)
-    '''if 'exit' not in command or 'quit' not in command:
-        command.append('exit')
-        command.append('quit')
-    '''
-    jumpRemote(jump, username, password, host, *command)
+    jumpRemote(jump, username, password, host, *command, logfile=logfile)
     print()
 
 if __name__ == '__main__':
