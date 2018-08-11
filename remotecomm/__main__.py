@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/__main__.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 18:16]
-#     Last Modified       :     [2018-08-11 00:05]
+#     Last Modified       :     [2018-08-11 00:11]
 #     Description         :     Version 1.0.2-dev1
 #################################################################################
 
@@ -17,7 +17,6 @@ from remotecomm.jumpRemote import jumpRemote
 # Change the jump variable to correct ip address
 #jump = '127.0.0.1'
 jump = 'edit the variable jump into the remotecomm/__main__ file'
-jump = '200.204.1.12'
 
 # Debug commands
 debug = False
