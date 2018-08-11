@@ -3,7 +3,7 @@
 #     File Name           :     command.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-05-23 01:18]
-#     Last Modified       :     [2018-08-08 20:47]
+#     Last Modified       :     [2018-08-10 23:59]
 #     Description         :     
 #################################################################################
 
@@ -12,7 +12,7 @@ import time
 import pexpect
 
 class remoteCMD:
-    def __init__(self, hostname, username, password, timeout=10.0, prompt_regex='', debug=True):
+    def __init__(self, hostname, username, password, timeout=10.0, prompt_regex='', debug=False):
         self.hostname = hostname
         self.username = username
         self.password = password
@@ -24,29 +24,31 @@ class remoteCMD:
     def jump(self):
         if self.debug: print('Method self.jump')
         self.connect = pexpect.spawn('ssh %s@%s' % (self.username, self.hostname), maxread=500000)
-        result = self.connect.expect(['[p|P]assword', '(yes/no)'], timeout=self.timeout)
+        result = self.connect.expect(['[p|P]assword', '(yes/no)'], timeout=60)
         if result == 1:
             self.connect.sendline('yes')
             self.connect.expect('[p|P]assword')
         self.connect.sendline(self.password)
         self.prompt()
+        time.sleep(0.4)
 
     def remote(self, hostname, username, password):
         if self.debug: print('Method self.remote')
-        self.prompt_exact = ''
         comm_ssh = 'ssh %s@%s' % (username, hostname)
         self.connect.sendline(comm_ssh)
         try:
-            self.connect.expect('[p|P]assword', timeout=self.timeout)
+            self.connect.expect('[p|P]assword', timeout=60)
         except pexpect.TIMEOUT:
             comm_telnet = 'telnet %s' % (hostname)
             self.connect.sendline(comm_telnet)
-            self.connect.expect('[u|U]sername')
+            self.connect.expect('[u|U]sername', timeout=60)
             self.connect.sendline(username)
-            self.connect.expect('[p|P]assword')
+            self.connect.expect('[p|P]assword', timeout=60)
         finally:
             self.connect.sendline(password)
-            self.prompt()
+            time.sleep(1.0)
+        self.prompt_exact = ''
+        self.prompt()
 
     def timeout_set(x):
         if self.debug: print('Method timeout_set')
@@ -132,6 +134,7 @@ class remoteCMD:
                 self.prompt_expect(**kargs)
             except:
                 sys.stderr.write('Error trying to expect device prompt')
+        time.sleep(0.1)
 
     def __del__(self):
         if self.debug: print('Method __del__')
