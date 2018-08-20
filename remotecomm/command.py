@@ -3,7 +3,7 @@
 #     File Name           :     command.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-05-23 01:18]
-#     Last Modified       :     [2018-08-10 23:59]
+#     Last Modified       :     [2018-08-20 17:06]
 #     Description         :     
 #################################################################################
 
@@ -101,7 +101,7 @@ class remoteCMD:
             # Compare prompts and return it if match
             if prompt_guess_1 == prompt_guess_2 and len(prompt_guess_1) > 4:
                 if self.debug: print('prompt found')
-                self.prompt_exact = prompt_guess_1
+                self.prompt_exact = prompt_guess_1.decode().split()[-1].encode()
                 return True
             else:
                 if self.debug: print('prompt not found')
