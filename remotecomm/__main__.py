@@ -3,7 +3,7 @@
 #     File Name           :     remotecomm/__main__.py
 #     Created By          :     Eloi Silva (eloi@how2security.com.br)
 #     Creation Date       :     [2017-07-13 18:16]
-#     Last Modified       :     [2018-09-01 00:44]
+#     Last Modified       :     [2018-09-01 00:58]
 #     Description         :     Version 1.0.3-dev1
 #################################################################################
 
@@ -52,6 +52,16 @@ parser.add_argument('-t', '--threads',
         required=False
         )
 
+# Timeout
+parser.add_argument('--timeout',
+        help='Prompt expect timeout',
+        type=int,
+        default=5,
+        metavar='n',
+        dest='timeout',
+        required=False
+        )
+
 # Debug
 parser.add_argument('--debug',
         help='Enable debug mode.',
@@ -80,11 +90,12 @@ class Config:
         self.args = parser.parse_args()
         self.queue = queue.Queue()
         self.screen = self.arg_screen
-        self.commands = self.arg_commands
-        self.jump = self.args.jump
-        self.threads = self.args.threads
         self.debug = self.args.debug
+        self.jump = self.args.jump
+        self.commands = self.arg_commands
         self.routers = self.arg_routers
+        self.threads = self.args.threads
+        self.timeout = self.args.timeout
 
     @property
     def arg_screen(self):
@@ -145,11 +156,11 @@ class Config:
             self.queue.put(router)
         # Start threads
         for ti in range(self.threads):
-            th = ExecRouter(self.queue, ti, self.jump, username, password, self.commands, self.screen, self.debug)
+            th = ExecRouter(self.queue, ti, self.jump, username, password, self.commands, self.screen, self.timeout, self.debug)
             th.start()
 
 class ExecRouter(threading.Thread):
-    def __init__(self, q, tid, jump, username, password, commands, screen, debug):
+    def __init__(self, q, tid, jump, username, password, commands, screen, timeout, debug):
         threading.Thread.__init__(self)
         self.tid = tid
         self.queue = q
@@ -159,6 +170,7 @@ class ExecRouter(threading.Thread):
         self.commands = commands
         self.screen = screen
         self.debug = debug
+        self.timeout = timeout
     def run(self):
         print('Starting Thread-%s' % self.tid)
         while True:
@@ -172,7 +184,7 @@ class ExecRouter(threading.Thread):
                     fileout = None
                 else:
                     fileout = os.path.join(self.screen, rtr + '_log.txt')
-                jumpRemote(self.jump, self.username, self.password, rtr, *self.commands, logfile=fileout, debug=self.debug)
+                jumpRemote(self.jump, self.username, self.password, rtr, *self.commands, logfile=fileout, timeout=self.timeout, debug=self.debug)
 
 def main():
     config = Config(parser)
